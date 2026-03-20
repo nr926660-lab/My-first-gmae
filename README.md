@@ -1106,3 +1106,87 @@ public class CheatManager : MonoBehaviour
         }
     }
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ghetto Bike Life | Official</title>
+    <style>
+        body { background: #000; color: #0ff; font-family: 'Courier New', monospace; }
+        #game-container { width: 960px; height: 600px; margin: 0 auto; border: 2px solid #0ff; }
+        .stats-bar { text-align: center; padding: 20px; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <div class="stats-bar">
+        CASH: $<span id="points-display">0</span> | DAILY GOAL: 10s SEAT SCRAPE
+    </div>
+    
+    <div id="game-container">
+        <iframe src="game/index.html" width="100%" height="100%" frameborder="0"></iframe>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+        <button onclick="alert('Cheat Activated!')">ENTER CODE</button>
+    </div>
+</body>
+</html>
+#custom-loader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #0ff;
+    z-index: 10; /* Sits on top of the game container */
+}
+
+.spinner-wheel {
+    width: 150px; /* Size of your wheel graphic */
+    height: 150px;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    margin-top: 20px;
+    letter-spacing: 2px;
+}
+<div id="custom-loader">
+    <img src="TemplateData/bike_silhouette_wheel.png" class="spinner-wheel" alt="Loading Wheel">
+    <div class="loading-text">[ STREETS ARE LOADING... ]</div>
+</div>
+<script>
+    function HideGhettoLoader() {
+        // Fade out and remove the loading overlay
+        document.getElementById("custom-loader").style.display = "none";
+    }
+</script>
+using UnityEngine;
+using System.Runtime.InteropServices; // Needed for browser communication
+
+public class InitialDataLoader : MonoBehaviour {
+    // Import the JavaScript function from the browser
+    [DllImport("__Internal")]
+    private static extern void HideGhettoLoader();
+
+    void Start() {
+        // Run your initial game setup here (load points, equip bike, etc.)
+        SaveManager.Instance.LoadGame();
+        
+        // Setup is complete! Tell the browser to hide the loading screen.
+        // (This only runs when built as WebGL)
+        #if UNITY_WEBGL
+            HideGhettoLoader();
+        #endif
+        
+        Debug.Log("GAME IS LIVE. Streets Loaded.");
+    }
+}
